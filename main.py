@@ -4,7 +4,7 @@ import os
 import traceback
 from enum import Enum
 
-from PyQt5.QtWidgets import QMainWindow, QFrame, QLabel
+from PyQt5.QtWidgets import QMainWindow, QFrame, QLabel, QDialog, QDesktopWidget
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTime, QTimer
 from PyQt5.QtGui import QIcon
@@ -19,8 +19,32 @@ from ui import img_rc
 from ui.waiting_animation import add_waiting_animation
 from ui.success_frame import SuccessFrame
 from ui.fail_frame import FailFrame
+from ui.string_dialog import Ui_Dialog
 import version
 
+
+##########  Python Library Version ##########
+recommend_package_dict = {'onnxruntime': '==1.18.0',
+                          'onnxruntime-gpu': '==1.18.0',
+                          'opencv-python': '>=4.5.2.52',
+                          'colorama': '>=0.4.6',
+                          'selenium': '==4.21.0',
+                          'webdriver-manager': '==4.0.1',
+                          'PyQt5': '==5.15.10'}
+#############################################
+
+
+class UpgradeDialog(QDialog):
+    def __init__(self):
+        super(UpgradeDialog, self).__init__()
+        self.ui = Ui_Dialog()
+        self.ui.setupUi(self)
+
+        self.__init_message()
+
+    def __init_message(self):
+        self.ui.label.setText('Have new version [1.0.1.1811]'
+                              '\nDo you want to upgrade?')
 
 
 class MainWindow(QMainWindow):
@@ -69,6 +93,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setFocus()
         self.setWindowIcon(QIcon('./ui/icon/icon-310.png'))
+        self.__center()
 
         self.__init_version()
         self.__add_waiting_animation()
@@ -79,8 +104,13 @@ class MainWindow(QMainWindow):
         self.__init_start_time()
         self.__set_btn_listener()
 
+    def __center(self):
+        screen = QDesktopWidget().screenGeometry()
+        size = self.geometry()
+        self.move((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2)
+
     def __init_version(self):
-        self.ui.label_version.setText('Version: {}'.format(version.library_version))
+        self.ui.label_version.setText('Version: {}'.format(version.version))
 
     def __add_waiting_animation(self):
         self.__waiting_animation_frame, self.__waiting_animation_label = add_waiting_animation(self.ui.centralwidget)
@@ -549,9 +579,18 @@ class StartThread(QThread):
 
 
 if __name__ == '__main__':
+    from utils.python_package_utils import show_recommend_version
+    show_recommend_version(recommend_package_dict)
+
     app = QtWidgets.QApplication([])
-    sport_center_window = MainWindow()
-    sport_center_window.show()
+
+    # from utils.upgrade_utils import check_have_new_version
+    # if check_have_new_version():
+    #     upgrade_dialog = UpgradeDialog()
+    #     upgrade_dialog.show()
+
+    msi_automatic_reserve = MainWindow()
+    msi_automatic_reserve.show()
 
     sys.exit(app.exec())
 
