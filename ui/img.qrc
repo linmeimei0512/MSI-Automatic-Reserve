@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="img">
+    <file>images/show-pw.png</file>
+    <file>images/msi-logo.png</file>
+    <file>images/hidden-pw.png</file>
+  </qresource>
+</RCC>

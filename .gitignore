@@ -1,0 +1,30 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# PyCharm
+.idea/
+
+# Python Cache
+__pycache__/
+
+# Build File
+build/
+dist/
+setup.py
+
+# Temp File
+_*
+!__init__.py
+screenshot.png
+
+# Account
+account.txt
+
+# Database Cache
+*.cache
